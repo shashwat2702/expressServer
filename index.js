@@ -1,28 +1,34 @@
+// Main file that gets server up and running
 const express = require("express");
-const app = express();
-const jwt = require("jsonwebtoken");
 const bodyParser = require("body-parser");
-const port = 3000;
+const signupRouter = require("./routes/signup");
 
+// Constants
+const PORT = 3000;
+
+// Initialization
+const app = express();
+
+// Middleware to parse incoming request
 app.use(bodyParser.json());
 
-app.get("/", (req, res) => {
-  const userName = req.query.username;
-  console.log(userName);
-  const token = jwt.sign({ foo: "bar" }, "shhhhh");
-  res.json({ token, userName });
+// List of routes to use
+app.use("/signup", signupRouter);
+
+// Default route returning 404
+app.use(function (req, res, next) {
+  res.status(404);
+
+  // respond with json
+  if (req.accepts("json")) {
+    res.send({ error: "Not found" });
+    return;
+  }
+
+  // default to plain-text. send()
+  res.type("txt").send("Not found");
 });
 
-app.post("/", (req, res) => res.send("Got a POST request"));
-
-app.put("/user", function (req, res) {
-  res.send("Got a PUT request at /user");
-});
-
-app.delete("/user", function (req, res) {
-  res.send("Got a DELETE request at /user");
-});
-
-app.listen(port, () =>
-  console.log(`Example app listening at http://localhost:${port}`)
+app.listen(PORT, () =>
+  console.log(`Example app listening at http://localhost:${PORT}`)
 );
