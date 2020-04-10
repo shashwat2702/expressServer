@@ -18,28 +18,16 @@ const router = express.Router();
 const userDeatilValidationRules = [check("userId").isNumeric()];
 
 /* GET list of users */
-router.get(
-  "/",
-  checkToken,
-  userDeatilValidationRules,
-  async (req, res, next) => {
-    const token = await verifyToken(req.token);
-    if (!token.verified) {
-      return res.status(403).json({ message: "Token invalid" });
-    }
-    const validationCheckResult = validationResult(req).array();
-
-    if (validationCheckResult.length !== 0) {
-      return res.status(422).json({
-        message: getInvalidRequestParamErrorMessage(validationCheckResult[0]),
-      });
-    }
-
-    const userDetail = await model.user.findById(req.params.userId);
-
-    return res.status(200).json(userDetailsResponseObject(userDetail));
+router.get("/", checkToken, async (req, res, next) => {
+  const token = await verifyToken(req.token);
+  if (!token.verified) {
+    return res.status(403).json({ message: "Token invalid" });
   }
-);
+
+  const userDetail = await model.user.getAllUsers();
+
+  return res.status(200).json(userDetail);
+});
 
 /* GET single user API */
 router.get(

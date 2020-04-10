@@ -46,6 +46,13 @@ module.exports = (sequelize, DataTypes) => {
   user.findById = (inputId) =>
     user.findOne({ where: { id: inputId } }).then((response) => response);
 
+  user.getAllUsers = () =>
+    user
+      .findAll({
+        attributes: { exclude: ["password"] },
+      })
+      .then((response) => response);
+
   user.checkCredential = (inputEmail, inputPassword) =>
     user
       .findOne({
