@@ -16,7 +16,7 @@ const checkToken = (req, res, next) => {
 
 const generateToken = (emailId) => {
   return jwt.sign({ email: emailId }, "secretKey", {
-    expiresIn: 5 * 60,
+    expiresIn: 30 * 60,
   });
 };
 
