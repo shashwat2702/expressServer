@@ -43,6 +43,9 @@ module.exports = (sequelize, DataTypes) => {
   user.isEmailTaken = (inputEmail) =>
     user.findOne({ where: { email: inputEmail } }).then((response) => response);
 
+  user.findById = (inputId) =>
+    user.findOne({ where: { id: inputId } }).then((response) => response);
+
   user.checkCredential = (inputEmail, inputPassword) =>
     user
       .findOne({

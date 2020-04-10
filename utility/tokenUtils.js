@@ -25,7 +25,7 @@ const verifyToken = (token) => {
     const decoded = jwt.verify(token, "secretKey");
     return Promise.resolve({ ...decoded, verified: true });
   } catch (err) {
-    return Promise.reject({
+    return Promise.resolve({
       verified: false,
     });
   }
