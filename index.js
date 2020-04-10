@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const express = require("express");
 const signupRouter = require("./routes/signup");
+const loginRouter = require("./routes/login");
 
 // Constants
 const PORT = 3000;
@@ -16,6 +17,7 @@ app.use(bodyParser.json());
 
 // List of routes to use
 app.use("/signup", signupRouter);
+app.use("/login", loginRouter);
 
 // Default route returning 404
 app.use(function (req, res, next) {

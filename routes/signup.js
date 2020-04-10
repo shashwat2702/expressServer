@@ -6,6 +6,7 @@ const model = require("./../models");
 
 // Importing helpers defined else where
 const { generateToken } = require("../utility/tokenUtils");
+const { userDetailsResponseObject } = require("../utility/responseUtils");
 const {
   getInvalidRequestParamErrorMessage,
 } = require("../utility/requestUtils");
@@ -38,18 +39,7 @@ const createUserValidationRules = [
   check("password").isLength({ min: 6 }),
 ];
 
-const getUserObjectForResponse = (userObj) => {
-  return {
-    createdAt: userObj.createdAt,
-    email: userObj.email,
-    firstName: userObj.firstName,
-    id: userObj.id,
-    lastName: userObj.firstName,
-    updatedAt: userObj.updatedAt,
-  };
-};
-
-/* POST signup page. */
+/* POST signup API */
 router.post("/", createUserValidationRules, async (req, res, next) => {
   const validationCheckResult = validationResult(req).array();
 
@@ -62,7 +52,7 @@ router.post("/", createUserValidationRules, async (req, res, next) => {
   const newUser = await createUser(req.body);
 
   return res.status(201).json({
-    ...getUserObjectForResponse(newUser),
+    ...userDetailsResponseObject(newUser),
     token: generateToken(newUser.email),
   });
 });
