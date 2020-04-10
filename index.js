@@ -7,7 +7,7 @@ const loginRouter = require("./routes/login");
 const userRouter = require("./routes/user");
 
 // Constants
-const PORT = 3000;
+const PORT = process.env.PORT;
 
 // Initialization
 const app = express();
@@ -35,6 +35,6 @@ app.use(function (req, res, next) {
   res.type("txt").send("Not found");
 });
 
-app.listen(PORT, () =>
+app.listen(PORT, "0.0.0.0", () =>
   console.log(`Example app listening at http://localhost:${PORT}`)
 );
