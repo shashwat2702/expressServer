@@ -1,9 +1,11 @@
 // Importing npm packages
 const express = require("express");
-const jwt = require("jsonwebtoken");
-const { check, validationResult } = require("express-validator");
+const { body, check, validationResult } = require("express-validator");
+
+const model = require("./../models");
 
 // Importing helpers defined else where
+const { generateToken } = require("../utility/tokenUtils");
 const {
   getInvalidRequestParamErrorMessage,
 } = require("../utility/requestUtils");
@@ -12,28 +14,57 @@ const {
 const router = express.Router();
 
 // Helper methods utilized in this module
-const validationRules = [
-  check("email").isEmail(),
+const createUser = async (body) => {
+  return await model.user.registerUser({
+    inputEmail: body.email,
+    inputFirstName: body.firstName,
+    inputLastName: body.lastName,
+    inputPassword: body.password,
+  });
+};
+
+const createUserValidationRules = [
+  body("email")
+    .isEmail()
+    .custom((value) => {
+      return model.user.isEmailTaken(value).then((user) => {
+        if (user) {
+          return Promise.reject("Email already in use");
+        }
+      });
+    }),
+  check("firstName").isAlphanumeric().optional(),
+  check("lastName").isAlphanumeric().optional(),
   check("password").isLength({ min: 6 }),
-  check("username").isAlphanumeric(),
 ];
 
-/* GET signup page. */
-router.get("/", (req, res, next) => {
-  return res.json({ message: "Page is not built yet" });
-});
+const getUserObjectForResponse = (userObj) => {
+  return {
+    createdAt: userObj.createdAt,
+    email: userObj.email,
+    firstName: userObj.firstName,
+    id: userObj.id,
+    lastName: userObj.firstName,
+    updatedAt: userObj.updatedAt,
+  };
+};
 
 /* POST signup page. */
-router.post("/", validationRules, (req, res, next) => {
+router.post("/", createUserValidationRules, async (req, res, next) => {
   const validationCheckResult = validationResult(req).array();
-  console.log(validationCheckResult);
+
   if (validationCheckResult.length !== 0) {
     return res.status(422).json({
       message: getInvalidRequestParamErrorMessage(validationCheckResult[0]),
     });
   }
-  const token = jwt.sign({ foo: "bar" }, "shhhhh");
-  return res.json({ userName: req.body.username, token });
+
+  const newUser = await createUser(req.body);
+
+  return res.status(201).json({
+    ...getUserObjectForResponse(newUser),
+    token: generateToken(newUser.email),
+  });
 });
 
 module.exports = router;
