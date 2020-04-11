@@ -13,7 +13,7 @@ const PORT = process.env.PORT;
 const app = express();
 
 // Middleware to parse incoming request
-app.options("*", cors());
+app.use(cors());
 app.use(bodyParser.json());
 
 // List of routes to use
