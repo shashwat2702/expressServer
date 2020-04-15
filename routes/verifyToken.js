@@ -1,5 +1,6 @@
 // Importing npm packages
 const express = require("express");
+const cors = require("cors");
 
 const model = require("./../models");
 
@@ -11,7 +12,7 @@ const { userDetailsResponseObject } = require("../utility/responseUtils");
 const router = express.Router();
 
 /* GET detail of token owner */
-router.get("/", checkToken, async (req, res, next) => {
+router.get("/", cors(), checkToken, async (req, res, next) => {
   const token = await verifyToken(req.token);
   if (!token.verified) {
     return res.status(403).json({ message: "Token invalid" });
