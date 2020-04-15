@@ -5,6 +5,7 @@ const express = require("express");
 const signupRouter = require("./routes/signup");
 const loginRouter = require("./routes/login");
 const userRouter = require("./routes/user");
+const verifyTokenRouter = require("./routes/verifyToken");
 
 // Constants
 const PORT = process.env.PORT;
@@ -20,6 +21,7 @@ app.use(bodyParser.json());
 app.use("/signup", signupRouter);
 app.use("/login", loginRouter);
 app.use("/user", userRouter);
+app.use("/verifyToken", verifyTokenRouter);
 
 // Default route returning 404
 app.use(function (req, res, next) {
