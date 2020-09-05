@@ -8,7 +8,7 @@ const userRouter = require("./routes/user");
 const verifyTokenRouter = require("./routes/verifyToken");
 
 // Constants
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 7000;
 
 // Initialization
 const app = express();
