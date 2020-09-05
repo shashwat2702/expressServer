@@ -35,11 +35,16 @@ router.post("/", loginUserValidationRules, async (req, res, next) => {
   }
 
   const userDetail = await authenticateUser(req.body);
-
-  return res.status(200).json({
-    ...userDetailsResponseObject(userDetail),
-    token: generateToken(userDetail.email),
-  });
+  if (userDetail) {
+    return res.status(200).json({
+      ...userDetailsResponseObject(userDetail),
+      token: generateToken(userDetail.email),
+    });
+  } else {
+    return res.status(401).json({
+      message: "Invalid email or password",
+    });
+  }
 });
 
 module.exports = router;
